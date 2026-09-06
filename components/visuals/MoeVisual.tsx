@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Slider from "../Slider";
+import { useAnimatedNumber } from "@/lib/useAnimatedNumber";
 
 const PARAMS_PER_EXPERT_B = 8; // billions of parameters per expert, illustrative
 const SHARED_PARAMS_B = 6; // attention layers etc., always active
@@ -27,9 +28,13 @@ export default function MoeVisual() {
   const [token, setToken] = useState(0);
 
   const active = Math.min(activeExperts, totalExperts);
-  const totalParams = SHARED_PARAMS_B + totalExperts * PARAMS_PER_EXPERT_B;
-  const activeParams = SHARED_PARAMS_B + active * PARAMS_PER_EXPERT_B;
-  const ratio = totalParams / activeParams;
+  const totalParams = Math.round(
+    useAnimatedNumber(SHARED_PARAMS_B + totalExperts * PARAMS_PER_EXPERT_B)
+  );
+  const activeParams = Math.round(
+    useAnimatedNumber(SHARED_PARAMS_B + active * PARAMS_PER_EXPERT_B)
+  );
+  const ratio = activeParams === 0 ? 0 : totalParams / activeParams;
   const chosen = routedExperts(token, totalExperts, active);
 
   return (
@@ -72,7 +77,7 @@ export default function MoeVisual() {
               style={{
                 borderColor: isActive ? "var(--accent-2)" : "var(--border)",
                 background: isActive
-                  ? "rgba(94, 234, 212, 0.15)"
+                  ? "color-mix(in srgb, var(--accent-2) 16%, transparent)"
                   : "var(--surface-2)",
                 opacity: isActive ? 1 : 0.45,
               }}

@@ -95,7 +95,7 @@ export default function SelfAttentionVisual() {
           onClick={() => setUseReal(false)}
           className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
             !useReal
-              ? "bg-accent text-[#0b0e17] border-accent"
+              ? "bg-accent text-on-accent border-accent"
               : "border-border text-muted hover:text-foreground"
           }`}
         >
@@ -106,7 +106,7 @@ export default function SelfAttentionVisual() {
           disabled={!hasKey}
           className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
             useReal
-              ? "bg-accent-2 text-[#0b0e17] border-accent-2"
+              ? "bg-accent-2 text-on-accent border-accent-2"
               : "border-border text-muted hover:text-foreground"
           }`}
         >

@@ -6,7 +6,10 @@ import Slider from "../Slider";
 const SEQ_LEN = 32;
 const DIMS = 4;
 const D_MODEL = 16;
-const COLORS = ["#7c9dff", "#5eead4", "#f2a65a", "#f2755a"];
+// Four curves need four separable hues. Amber, brass and ember come straight
+// from the palette; the fourth is a muted sage that still reads as part of a
+// warm earth set while staying distinguishable from the other three.
+const COLORS = ["#f0a340", "#c9b458", "#d95f3c", "#9aa568"];
 
 function encode(pos: number, dim: number): number {
   const freq = 1 / Math.pow(10000, (2 * Math.floor(dim / 2)) / D_MODEL);

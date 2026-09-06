@@ -18,10 +18,12 @@ export default function Header({ view, setView }: HeaderProps) {
       <div className="max-w-4xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 min-w-0">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-accent to-accent-2 flex items-center justify-center text-[#0b0e17] font-bold text-xs shrink-0">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-accent to-accent-2 flex items-center justify-center text-on-accent font-bold text-xs shrink-0">
               T
             </div>
-            <span className="font-semibold text-sm">Transformer Atlas</span>
+            <span className="font-serif font-semibold text-[15px]">
+              Transformer Atlas
+            </span>
           </div>
           <nav className="flex gap-1 bg-surface-2 rounded-full p-0.5">
             {(["course", "playground", "api"] as const).map((v) => (
@@ -30,7 +32,7 @@ export default function Header({ view, setView }: HeaderProps) {
                 onClick={() => setView(v)}
                 className={`px-3 py-1 rounded-full text-xs font-medium transition-colors whitespace-nowrap ${
                   view === v
-                    ? "bg-accent text-[#0b0e17]"
+                    ? "bg-accent text-on-accent"
                     : "text-muted hover:text-foreground"
                 }`}
               >
@@ -74,7 +76,7 @@ export default function Header({ view, setView }: HeaderProps) {
                   setEditing(false);
                   setInput("");
                 }}
-                className="text-xs text-[#0b0e17] bg-accent rounded-md px-2 py-1.5 font-medium"
+                className="text-xs text-on-accent bg-accent rounded-md px-2 py-1.5 font-medium"
               >
                 Save
               </button>

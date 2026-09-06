@@ -49,7 +49,7 @@ export default function StepNav({
       <button
         onClick={onNext}
         disabled={index === total - 1}
-        className="px-4 py-2 rounded-md bg-accent text-[#0b0e17] text-sm font-medium disabled:opacity-30 disabled:cursor-not-allowed hover:brightness-110 transition"
+        className="px-4 py-2 rounded-md bg-accent text-on-accent text-sm font-medium disabled:opacity-30 disabled:cursor-not-allowed hover:brightness-110 transition"
       >
         Next →
       </button>

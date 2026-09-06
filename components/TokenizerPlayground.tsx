@@ -8,11 +8,11 @@ const SAMPLE =
   "Transformers revolutionized natural language understanding by replacing recurrence with self-attention.";
 
 const PALETTE = [
-  "rgba(124,157,255,0.35)",
-  "rgba(94,234,212,0.3)",
-  "rgba(242,166,90,0.32)",
-  "rgba(242,117,90,0.28)",
-  "rgba(167,139,250,0.32)",
+  "rgba(240,163,64,0.32)",
+  "rgba(201,180,88,0.30)",
+  "rgba(217,95,60,0.28)",
+  "rgba(154,165,104,0.30)",
+  "rgba(201,138,106,0.30)",
 ];
 
 export default function TokenizerPlayground() {
@@ -23,7 +23,9 @@ export default function TokenizerPlayground() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-10">
-      <h2 className="text-2xl font-semibold mb-2">Tokenizer Playground</h2>
+      <h2 className="font-serif text-[27px] font-semibold mb-2 text-balance">
+        Tokenizer Playground
+      </h2>
       <p className="text-sm text-muted mb-6 leading-relaxed">
         Every LLM breaks text into tokens — chunks that are sometimes whole
         words, sometimes word-pieces — before it can process anything. Type

@@ -1,16 +1,23 @@
 @import "tailwindcss";
 
+/* Warm-dark "amber instrument" palette. Every hue here is warm; the three
+   accents are separated by brightness and saturation rather than hue, which
+   is what keeps the colour-encoded visuals legible. Contrast measured against
+   --background: foreground 16.3, muted 6.3, accent 9.1, accent-2 9.2,
+   accent-warm 5.1 — all WCAG AA. */
 :root {
-  --background: #0b0e17;
-  --surface: #131826;
-  --surface-2: #1a2033;
-  --border: #262d42;
-  --foreground: #e8ebf5;
-  --muted: #8891ab;
-  --accent: #7c9dff;
-  --accent-2: #5eead4;
-  --accent-warm: #f2a65a;
-  --danger: #f2755a;
+  --background: #140f0a;
+  --surface: #1e1710;
+  --surface-2: #2a2016;
+  --border: #3d2f21;
+  --foreground: #f7ecdc;
+  --muted: #a89076;
+  --accent: #f0a340;
+  --accent-2: #c9b458;
+  --accent-warm: #d95f3c;
+  --danger: #e05252;
+  /* text that sits on top of a filled accent surface */
+  --on-accent: #140f0a;
 }
 
 @theme inline {
@@ -23,8 +30,11 @@
   --color-accent: var(--accent);
   --color-accent-2: var(--accent-2);
   --color-accent-warm: var(--accent-warm);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-danger: var(--danger);
+  --color-on-accent: var(--on-accent);
+  --font-sans: var(--font-plex-sans);
+  --font-serif: var(--font-plex-serif);
+  --font-mono: var(--font-plex-mono);
 }
 
 html {
@@ -34,12 +44,12 @@ html {
 body {
   background: radial-gradient(
       1200px 600px at 80% -10%,
-      rgba(124, 157, 255, 0.12),
+      rgba(240, 163, 64, 0.13),
       transparent
     ),
     radial-gradient(
       900px 500px at 0% 100%,
-      rgba(94, 234, 212, 0.08),
+      rgba(217, 95, 60, 0.09),
       transparent
     ),
     var(--background);
@@ -47,8 +57,25 @@ body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
+/* Fine grain so surfaces read as a material rather than flat fills. Fixed so
+   it doesn't slide against content while scrolling. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.42;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.3'/%3E%3C/svg%3E");
+}
+
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
 ::selection {
-  background: rgba(124, 157, 255, 0.35);
+  background: rgba(240, 163, 64, 0.32);
 }
 
 /* Custom range slider */
@@ -75,14 +102,19 @@ input[type="range"]::-webkit-slider-thumb {
   height: 18px;
   border-radius: 50%;
   background: var(--accent);
-  border: 3px solid #0b0e17;
+  border: 3px solid var(--background);
   box-shadow: 0 0 0 1px var(--accent);
   cursor: pointer;
-  transition: transform 0.1s ease;
+  transition: transform 0.1s ease, box-shadow 0.15s ease;
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
   transform: scale(1.15);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 14px rgba(240, 163, 64, 0.45);
+}
+
+input[type="range"]:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 1px var(--accent), 0 0 0 4px rgba(240, 163, 64, 0.35);
 }
 
 input[type="range"]::-moz-range-thumb {
@@ -90,7 +122,7 @@ input[type="range"]::-moz-range-thumb {
   height: 18px;
   border-radius: 50%;
   background: var(--accent);
-  border: 3px solid #0b0e17;
+  border: 3px solid var(--background);
   box-shadow: 0 0 0 1px var(--accent);
   cursor: pointer;
 }
@@ -117,4 +149,31 @@ input[type="range"]::-moz-range-thumb {
 
 .animate-fade-in-up {
   animation: fade-in-up 0.4s ease both;
+}
+
+/* Children arrive in sequence rather than all at once. */
+.stagger > * {
+  animation: fade-in-up 0.42s ease both;
+}
+.stagger > *:nth-child(2) {
+  animation-delay: 0.06s;
+}
+.stagger > *:nth-child(3) {
+  animation-delay: 0.12s;
+}
+.stagger > *:nth-child(4) {
+  animation-delay: 0.18s;
+}
+.stagger > *:nth-child(n + 5) {
+  animation-delay: 0.24s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up,
+  .stagger > * {
+    animation: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    transition: none;
+  }
 }

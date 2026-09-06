@@ -163,7 +163,9 @@ export default function ApiExplorer() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-10 space-y-8">
       <div>
-        <h2 className="text-2xl font-semibold mb-2">LLM API Deep Dive</h2>
+        <h2 className="font-serif text-[27px] font-semibold mb-2 text-balance">
+          LLM API Deep Dive
+        </h2>
         <p className="text-sm text-accent-2/90 leading-relaxed">
           Every chat app, including this one, is a thin UI around one HTTP
           call. Send a real message below and watch exactly what goes in and
@@ -229,7 +231,7 @@ export default function ApiExplorer() {
               <div
                 className={`max-w-[85%] rounded-lg px-3 py-2 text-sm ${
                   m.role === "user"
-                    ? "bg-accent text-[#0b0e17]"
+                    ? "bg-accent text-on-accent"
                     : "bg-surface border border-border text-foreground"
                 }`}
               >
@@ -266,7 +268,7 @@ export default function ApiExplorer() {
           <button
             onClick={send}
             disabled={!hasKey || sending || !draft.trim()}
-            className="px-4 py-2 rounded-md bg-accent text-[#0b0e17] font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110 transition"
+            className="px-4 py-2 rounded-md bg-accent text-on-accent font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110 transition"
           >
             {sending ? "Sending…" : "Send"}
           </button>

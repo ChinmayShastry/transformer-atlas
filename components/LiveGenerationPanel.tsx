@@ -72,7 +72,7 @@ export default function LiveGenerationPanel() {
       <button
         onClick={handleGenerate}
         disabled={!hasKey || loading || !prompt.trim()}
-        className="w-full rounded-md bg-accent text-[#0b0e17] font-medium text-sm py-2 disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110 transition"
+        className="w-full rounded-md bg-accent text-on-accent font-medium text-sm py-2 disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110 transition"
       >
         {loading ? "Generating…" : "Generate completion"}
       </button>

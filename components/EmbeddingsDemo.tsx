@@ -93,7 +93,7 @@ export default function EmbeddingsDemo() {
       <button
         onClick={compare}
         disabled={!hasKey || loading || !a.trim() || !b.trim()}
-        className="w-full rounded-md bg-accent text-[#0b0e17] font-medium text-sm py-2 disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110 transition"
+        className="w-full rounded-md bg-accent text-on-accent font-medium text-sm py-2 disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110 transition"
       >
         {loading ? "Embedding…" : "Compare meaning"}
       </button>

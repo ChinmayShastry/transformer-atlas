@@ -4,11 +4,16 @@ import { useState } from "react";
 import Slider from "../Slider";
 import { useSentence } from "../SentenceContext";
 import { tokenizeSentence } from "@/lib/similarity";
+import { useAnimatedNumber } from "@/lib/useAnimatedNumber";
 
 export default function RNNVisual() {
   const { sentence } = useSentence();
   const words = tokenizeSentence(sentence, 14);
   const [gateStrength, setGateStrength] = useState(0.62);
+
+  const retentionTarget =
+    words.length < 2 ? 0 : Math.pow(gateStrength, words.length - 1) * 100;
+  const finalRetention = Math.round(useAnimatedNumber(retentionTarget));
 
   if (words.length < 2) {
     return (
@@ -18,10 +23,6 @@ export default function RNNVisual() {
       </p>
     );
   }
-
-  const finalRetention = Math.round(
-    Math.pow(gateStrength, words.length - 1) * 100
-  );
   const gateDescription =
     gateStrength < 0.5
       ? "vanilla RNN"
@@ -52,8 +53,12 @@ export default function RNNVisual() {
                   <div
                     className="w-12 h-12 rounded-full flex items-center justify-center text-[11px] font-mono border-2 transition-all duration-300"
                     style={{
-                      borderColor: `rgba(124,157,255,${0.25 + retention * 0.75})`,
-                      background: `rgba(124,157,255,${retention * 0.25})`,
+                      borderColor: `color-mix(in srgb, var(--accent) ${Math.round(
+                        25 + retention * 75
+                      )}%, transparent)`,
+                      background: `color-mix(in srgb, var(--accent) ${Math.round(
+                        retention * 25
+                      )}%, transparent)`,
                     }}
                   >
                     h{i}

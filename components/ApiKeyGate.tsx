@@ -22,10 +22,10 @@ export default function ApiKeyGate({ onDismiss }: { onDismiss: () => void }) {
     <div className="min-h-screen flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md rounded-2xl border border-border bg-surface p-7 shadow-2xl animate-fade-in-up">
         <div className="flex items-center gap-2 mb-1">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent to-accent-2 flex items-center justify-center text-[#0b0e17] font-bold text-sm">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent to-accent-2 flex items-center justify-center text-on-accent font-bold text-sm">
             T
           </div>
-          <h1 className="text-lg font-semibold">Transformer Atlas</h1>
+          <h1 className="font-serif text-xl font-semibold">Transformer Atlas</h1>
         </div>
         <p className="text-sm text-muted mb-6">
           An interactive, visual walkthrough of how Transformers evolved —
@@ -71,7 +71,7 @@ export default function ApiKeyGate({ onDismiss }: { onDismiss: () => void }) {
           <button
             onClick={handleContinue}
             disabled={input.length > 0 && !looksValid}
-            className="w-full rounded-md bg-accent text-[#0b0e17] font-medium text-sm py-2.5 disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110 transition"
+            className="w-full rounded-md bg-accent text-on-accent font-medium text-sm py-2.5 disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110 transition"
           >
             {input ? "Continue with this key" : "Continue"}
           </button>

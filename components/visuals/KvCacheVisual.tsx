@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Slider from "../Slider";
+import { useAnimatedNumber } from "@/lib/useAnimatedNumber";
 
 export default function KvCacheVisual() {
   const [steps, setSteps] = useState(8);
@@ -9,10 +10,10 @@ export default function KvCacheVisual() {
 
   // Without a cache, generating token n recomputes K/V for all n tokens.
   // With one, each step computes exactly one new token's K/V.
-  const withoutCache = (steps * (steps + 1)) / 2;
-  const withCache = steps;
+  const withoutCache = Math.round(useAnimatedNumber((steps * (steps + 1)) / 2));
+  const withCache = Math.round(useAnimatedNumber(steps));
   const saved = withoutCache - withCache;
-  const speedup = withoutCache / withCache;
+  const speedup = withCache === 0 ? 0 : withoutCache / withCache;
 
   return (
     <div className="space-y-6">
@@ -23,7 +24,7 @@ export default function KvCacheVisual() {
             onClick={() => setCacheOn(on)}
             className={`px-3.5 py-1.5 rounded-full text-sm font-medium border transition-colors ${
               cacheOn === on
-                ? "bg-accent text-[#0b0e17] border-accent"
+                ? "bg-accent text-on-accent border-accent"
                 : "border-border text-muted hover:text-foreground"
             }`}
           >
@@ -62,7 +63,7 @@ export default function KvCacheVisual() {
                       background: computed
                         ? "var(--accent-warm)"
                         : cached
-                        ? "rgba(94, 234, 212, 0.3)"
+                        ? "color-mix(in srgb, var(--accent-2) 32%, transparent)"
                         : "var(--surface-2)",
                       opacity: inSequence ? 1 : 0.25,
                     }}
@@ -85,7 +86,7 @@ export default function KvCacheVisual() {
         <span className="flex items-center gap-1.5">
           <span
             className="w-3 h-3 rounded-[3px]"
-            style={{ background: "rgba(94, 234, 212, 0.3)" }}
+            style={{ background: "color-mix(in srgb, var(--accent-2) 32%, transparent)" }}
           />
           reused from cache
         </span>

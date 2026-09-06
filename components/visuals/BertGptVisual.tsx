@@ -39,7 +39,7 @@ export default function BertGptVisual() {
             onClick={() => setMode(m)}
             className={`px-3.5 py-1.5 rounded-full text-sm font-medium border transition-colors ${
               mode === m
-                ? "bg-accent text-[#0b0e17] border-accent"
+                ? "bg-accent text-on-accent border-accent"
                 : "border-border text-muted hover:text-foreground"
             }`}
           >
@@ -88,7 +88,7 @@ export default function BertGptVisual() {
                   className="aspect-square rounded-[3px] transition-colors duration-200"
                   style={{
                     background: visible(i, j)
-                      ? "rgba(94, 234, 212, 0.55)"
+                      ? "color-mix(in srgb, var(--accent-2) 55%, transparent)"
                       : "var(--surface-2)",
                     outline:
                       i === pos ? "1.5px solid var(--accent-warm)" : "none",

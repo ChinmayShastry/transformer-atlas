@@ -49,7 +49,7 @@ export default function StepCard({
       <p className="text-xs font-mono text-muted mb-2">
         Step {index + 1} / {total}
       </p>
-      <h2 className="text-2xl font-semibold mb-3 text-foreground">
+      <h2 className="font-serif text-[27px] leading-[1.22] font-semibold mb-3 text-foreground text-balance">
         {step.title}
       </h2>
       <p className="text-base text-accent-2/90 leading-relaxed mb-6 max-w-2xl">

@@ -156,7 +156,7 @@ export default function ToolCallingDemo() {
           <button
             onClick={requestToolCall}
             disabled={!hasKey || loading !== "none" || !prompt.trim()}
-            className="px-3 py-2 rounded-md bg-accent text-[#0b0e17] font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110 transition whitespace-nowrap"
+            className="px-3 py-2 rounded-md bg-accent text-on-accent font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110 transition whitespace-nowrap"
           >
             {loading === "call" ? "Asking…" : "Ask"}
           </button>
@@ -189,7 +189,7 @@ export default function ToolCallingDemo() {
           <button
             onClick={sendResultBack}
             disabled={loading !== "none"}
-            className="w-full rounded-md bg-accent-2 text-[#0b0e17] font-medium text-sm py-2 disabled:opacity-40 hover:brightness-110 transition"
+            className="w-full rounded-md bg-accent-2 text-on-accent font-medium text-sm py-2 disabled:opacity-40 hover:brightness-110 transition"
           >
             {loading === "answer"
               ? "Sending result back…"

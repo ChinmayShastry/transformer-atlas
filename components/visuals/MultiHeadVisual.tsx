@@ -52,7 +52,9 @@ export default function MultiHeadVisual() {
                     key={idx}
                     className="aspect-square rounded-[2px]"
                     style={{
-                      background: `rgba(94, 234, 212, ${Math.min(1, v)})`,
+                      background: `color-mix(in srgb, var(--accent-2) ${Math.round(
+                        Math.min(1, v) * 100
+                      )}%, transparent)`,
                     }}
                   />
                 );

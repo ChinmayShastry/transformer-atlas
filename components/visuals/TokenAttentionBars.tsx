@@ -61,7 +61,9 @@ export default function TokenAttentionBars({
                       height: `${Math.max(4, intensity * 100)}%`,
                       background: isQuery
                         ? "var(--accent-warm)"
-                        : `rgba(124, 157, 255, ${0.3 + intensity * 0.7})`,
+                        : `color-mix(in srgb, var(--accent) ${Math.round(
+                            30 + intensity * 70
+                          )}%, transparent)`,
                     }}
                   />
                 </div>
