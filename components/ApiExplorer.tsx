@@ -3,6 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import Slider from "./Slider";
 import { useApiKey } from "./ApiKeyContext";
+import ToolCallingDemo from "./ToolCallingDemo";
+import EmbeddingsDemo from "./EmbeddingsDemo";
+
+const CONTEXT_WINDOW = 128_000; // gpt-4o-mini
 
 interface ChatMessage {
   role: "user" | "assistant";
@@ -391,6 +395,35 @@ export default function ApiExplorer() {
             JSON blob — switch off streaming to inspect a full raw response.
           </p>
         )}
+
+        {usage && (
+          <div className="pt-1">
+            <div className="flex items-baseline justify-between mb-1.5">
+              <span className="text-xs font-medium">Context window used</span>
+              <span className="text-xs font-mono text-muted">
+                {usage.prompt_tokens.toLocaleString()} /{" "}
+                {CONTEXT_WINDOW.toLocaleString()}
+              </span>
+            </div>
+            <div className="h-2 rounded-full bg-surface-2 overflow-hidden">
+              <div
+                className="h-full bg-accent transition-all duration-500"
+                style={{
+                  width: `${Math.max(
+                    0.4,
+                    (usage.prompt_tokens / CONTEXT_WINDOW) * 100
+                  )}%`,
+                }}
+              />
+            </div>
+            <p className="text-[11px] text-muted mt-1.5">
+              Every turn resends the whole conversation, so this bar only grows
+              as you chat. When it fills, the oldest messages have to be dropped
+              or summarised — that is what &quot;losing context&quot; actually
+              means.
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="rounded-lg border border-border bg-surface-2/30 p-4 text-sm text-muted leading-relaxed space-y-1.5">
@@ -423,6 +456,10 @@ export default function ApiExplorer() {
           current numbers.
         </p>
       </div>
+
+      <ToolCallingDemo />
+
+      <EmbeddingsDemo />
     </div>
   );
 }

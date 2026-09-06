@@ -21,10 +21,61 @@ export default function CourseApp({ steps }: { steps: Step[] }) {
   );
 }
 
+const PROGRESS_KEY = "transformer-atlas-progress";
+
 function CourseShell({ steps }: { steps: Step[] }) {
   const [gateOpen, setGateOpen] = useState(true);
   const [view, setView] = useState<"course" | "playground" | "api">("course");
   const [index, setIndex] = useState(0);
+
+  // A shared link (#kv-cache) wins over saved progress, so someone opening
+  // your link lands where you meant them to.
+  useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (hash === "tokenizer") {
+      setView("playground");
+      return;
+    }
+    if (hash === "api") {
+      setView("api");
+      return;
+    }
+    if (hash) {
+      const linked = steps.findIndex((s) => s.id === hash);
+      if (linked >= 0) {
+        setIndex(linked);
+        return;
+      }
+    }
+    try {
+      const saved = localStorage.getItem(PROGRESS_KEY);
+      if (saved) {
+        const resumed = steps.findIndex((s) => s.id === saved);
+        if (resumed >= 0) setIndex(resumed);
+      }
+    } catch {
+      // private mode / blocked storage — just start at the beginning
+    }
+  }, [steps]);
+
+  useEffect(() => {
+    if (gateOpen) return;
+    const hash =
+      view === "course"
+        ? steps[index]?.id
+        : view === "playground"
+        ? "tokenizer"
+        : "api";
+    if (!hash) return;
+    window.history.replaceState(null, "", `#${hash}`);
+    if (view === "course") {
+      try {
+        localStorage.setItem(PROGRESS_KEY, hash);
+      } catch {
+        // ignore unavailable storage
+      }
+    }
+  }, [view, index, gateOpen, steps]);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {

@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
 interface ChatMessage {
-  role: "system" | "user" | "assistant";
-  content: string;
+  role: "system" | "user" | "assistant" | "tool";
+  // null for an assistant turn that only carries tool_calls
+  content: string | null;
+  tool_calls?: unknown;
+  tool_call_id?: string;
 }
 
 interface ChatBody {
@@ -14,6 +17,7 @@ interface ChatBody {
   frequency_penalty?: number;
   presence_penalty?: number;
   stream?: boolean;
+  tools?: unknown[];
 }
 
 function clamp(n: number, min: number, max: number) {
@@ -45,8 +49,8 @@ export async function POST(req: NextRequest) {
   for (const m of messages) {
     if (
       !m ||
-      !["system", "user", "assistant"].includes(m.role) ||
-      typeof m.content !== "string"
+      !["system", "user", "assistant", "tool"].includes(m.role) ||
+      (typeof m.content !== "string" && m.content !== null)
     ) {
       return NextResponse.json(
         { error: "Each message needs a valid role and content." },
@@ -54,7 +58,10 @@ export async function POST(req: NextRequest) {
       );
     }
   }
-  const totalLen = messages.reduce((sum, m) => sum + m.content.length, 0);
+  const totalLen = messages.reduce(
+    (sum, m) => sum + (m.content?.length ?? 0),
+    0
+  );
   if (totalLen > 8000) {
     return NextResponse.json(
       { error: "Conversation is too long for this demo (max 8000 characters)." },
@@ -73,6 +80,9 @@ export async function POST(req: NextRequest) {
     presence_penalty: clamp(Number(body.presence_penalty ?? 0), -2, 2),
     stream,
     ...(stream ? { stream_options: { include_usage: true } } : {}),
+    ...(Array.isArray(body.tools) && body.tools.length > 0
+      ? { tools: body.tools.slice(0, 8) }
+      : {}),
   };
 
   try {

@@ -7,6 +7,17 @@ Once the Transformer existed, the field split it into two lineages by keeping di
 
 GPT (2018 onward, OpenAI) kept the decoder and trained it autoregressively: it only ever sees the tokens that came before the current position, and its sole job is to predict the next token. That causal, left-to-right constraint looks like a limitation, but it's exactly what you need for generation — writing text one token at a time, each one conditioned only on what's been written so far. It also enables something BERT's bidirectional objective can't do as naturally: keep predicting indefinitely, one token feeding into the next, which is the mechanism behind every chatbot response you've ever read. Neither direction is strictly better — they were optimized for different jobs — but GPT's generative framing turned out to scale into something far more general-purpose than anyone expected.
 %%%
+id: kv-cache
+title: The KV Cache — Why Generation Isn't Absurdly Slow
+oneliner: Generating token 500 should mean re-running attention over all 499 previous tokens — instead models stash every token's Key and Value vectors and reuse them, turning quadratic work into linear.
+visual: kvcache
+---
+Here's a problem hiding inside autoregressive generation. To produce each new token, the model runs self-attention over the entire sequence so far. Naively, generating a 500-token response means running attention over 1 token, then 2, then 3, all the way to 500 — roughly 125,000 token-steps of redundant work, where almost every step recomputes Keys and Values it already computed moments ago.
+
+The fix is the KV cache. Since a past token's Key and Value vectors never change once computed — the causal mask guarantees earlier tokens can't see later ones, so nothing later can alter them — the model computes them once and keeps them in GPU memory. Each new generation step then only computes the Query, Key, and Value for the single new token, and attends against the cached Keys and Values for everything before it. Total work drops from quadratic to linear in the length of the output.
+
+This is why the first token of a chatbot response often takes noticeably longer than the rest: that first step ("prefill") processes your entire prompt at once, while every subsequent token ("decode") is a cheap incremental step riding on the cache. It's also why long conversations consume so much GPU memory — the cache grows with every token and, at long context lengths, can end up larger than the model weights themselves. Much of modern inference engineering (multi-query attention, grouped-query attention, paged attention) exists specifically to keep that cache small.
+%%%
 id: scaling-laws
 title: Scaling Up — GPT-3, RLHF, and Modern LLMs
 oneliner: Making GPT bigger and feeding it more data didn't just make it marginally better — past a certain scale, entirely new abilities showed up that smaller versions simply couldn't do, and a later fine-tuning step taught it to actually follow instructions.
@@ -15,3 +26,14 @@ visual: scaling
 GPT-2 (2019, 1.5B parameters) showed that a big enough next-token predictor could write surprisingly coherent paragraphs. GPT-3 (2020, 175B parameters) showed something stranger: capabilities like few-shot learning, basic arithmetic, and rudimentary reasoning emerged without ever being explicitly trained for them — they appeared as a side effect of scale. Researchers formalized this relationship as scaling laws: loss decreases smoothly and predictably as you increase model size, data, and compute together, which meant labs could forecast — and chase — performance simply by scaling up.
 
 But a raw next-token predictor trained on internet text isn't naturally helpful, honest, or safe — it just continues text plausibly, including toxic or wrong text. The step that turned GPT-3-style models into assistants like ChatGPT was RLHF (Reinforcement Learning from Human Feedback): human raters rank different model outputs, a reward model learns to predict those preferences, and the language model is then fine-tuned to produce outputs the reward model scores highly. This is why a raw pretrained model and its instruction-tuned, RLHF'd counterpart can feel like completely different products even though the underlying Transformer architecture — self-attention, multi-head attention, positional encoding — hasn't fundamentally changed since 2017. Every model since, including gpt-4o-mini, is still, at its core, the same idea from "Attention Is All You Need," scaled up and aligned to be useful.
+%%%
+id: moe
+title: Mixture of Experts — Getting Huge Without Getting Slow
+oneliner: Scaling laws say bigger is better, but bigger is also slower and pricier — so modern models split their feed-forward layers into many "experts" and route each token through only a couple of them.
+visual: moe
+---
+Dense scaling has an uncomfortable cost curve: if every parameter has to be multiplied for every token, then doubling the parameter count roughly doubles the compute for each token you process. Scaling laws promised better models from more parameters, but nobody wants inference costs scaling in lockstep.
+
+Mixture of Experts (MoE) breaks that link. Instead of one big feed-forward block per layer, an MoE layer holds many smaller expert blocks — 8, 64, sometimes hundreds — plus a small router network that looks at each token and picks the best two (or so) experts to send it through. The other experts sit idle for that token. The result is a model with an enormous total parameter count but a much smaller *active* parameter count per token, which is what actually determines the compute cost. A model can hold, say, 400B parameters in total while only doing the work of a 30B one on any given token.
+
+The catch is that all those parameters still have to live in GPU memory even when idle, so MoE trades compute for memory rather than eliminating cost outright. Routing also introduces its own problems — if the router sends most tokens to the same few favorites, the rest of the network is wasted capacity, so training uses auxiliary losses to keep expert usage balanced. Despite that, MoE is now standard in frontier models precisely because it's the cleanest known way to keep climbing the scaling curve without inference costs climbing with it.

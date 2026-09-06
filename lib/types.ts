@@ -5,8 +5,11 @@ export type VisualKey =
   | "selfattention"
   | "multihead"
   | "posenc"
+  | "rope"
   | "bertgpt"
-  | "scaling";
+  | "kvcache"
+  | "scaling"
+  | "moe";
 
 export interface Step {
   id: string;

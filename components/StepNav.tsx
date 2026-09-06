@@ -16,7 +16,7 @@ export default function StepNav({
   onJump,
 }: StepNavProps) {
   return (
-    <div className="flex items-center justify-between gap-4 mt-8 pt-6 border-t border-border">
+    <div className="flex flex-wrap items-center justify-between gap-3 mt-8 pt-6 border-t border-border">
       <button
         onClick={onPrev}
         disabled={index === 0}
@@ -25,7 +25,9 @@ export default function StepNav({
         ← Back
       </button>
 
-      <div className="flex items-center gap-1.5">
+      {/* Dots get their own centered row on narrow screens so the Next button
+          never gets pushed off the edge as steps are added. */}
+      <div className="flex items-center justify-center gap-1.5 order-last w-full sm:order-none sm:w-auto">
         {Array.from({ length: total }).map((_, i) => (
           <button
             key={i}

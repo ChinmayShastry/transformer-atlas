@@ -53,6 +53,12 @@ export const MILESTONES: Milestone[] = [
       "175B parameters — few-shot learning and reasoning emerge without explicit training.",
   },
   {
+    year: "2021",
+    label: "RoPE",
+    detail:
+      "Rotary position embeddings encode relative distance by rotation — now the default in most open models.",
+  },
+  {
     year: "2022",
     label: "RLHF / ChatGPT",
     detail:

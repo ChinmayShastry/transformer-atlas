@@ -16,7 +16,7 @@ export default function Header({ view, setView }: HeaderProps) {
   return (
     <header className="sticky top-0 z-20 backdrop-blur-md bg-background/80 border-b border-border">
       <div className="max-w-4xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 min-w-0">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-accent to-accent-2 flex items-center justify-center text-[#0b0e17] font-bold text-xs shrink-0">
               T
@@ -34,11 +34,16 @@ export default function Header({ view, setView }: HeaderProps) {
                     : "text-muted hover:text-foreground"
                 }`}
               >
-                {v === "course"
-                  ? "Course"
-                  : v === "playground"
-                  ? "Tokenizer"
-                  : "API Deep Dive"}
+                {v === "course" ? (
+                  "Course"
+                ) : v === "playground" ? (
+                  "Tokenizer"
+                ) : (
+                  <>
+                    <span className="sm:hidden">API</span>
+                    <span className="hidden sm:inline">API Deep Dive</span>
+                  </>
+                )}
               </button>
             ))}
           </nav>

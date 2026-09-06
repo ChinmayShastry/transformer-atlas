@@ -10,6 +10,9 @@ import PositionalEncodingVisual from "./visuals/PositionalEncodingVisual";
 import BertGptVisual from "./visuals/BertGptVisual";
 import ScalingVisual from "./visuals/ScalingVisual";
 import TimelineVisual from "./visuals/TimelineVisual";
+import RopeVisual from "./visuals/RopeVisual";
+import KvCacheVisual from "./visuals/KvCacheVisual";
+import MoeVisual from "./visuals/MoeVisual";
 import LiveGenerationPanel from "./LiveGenerationPanel";
 import SentenceInput from "./SentenceInput";
 
@@ -22,8 +25,11 @@ const VISUALS: Record<Step["visual"], React.ComponentType> = {
   selfattention: SelfAttentionVisual,
   multihead: MultiHeadVisual,
   posenc: PositionalEncodingVisual,
+  rope: RopeVisual,
   bertgpt: BertGptVisual,
+  kvcache: KvCacheVisual,
   scaling: ScalingVisual,
+  moe: MoeVisual,
 };
 
 export default function StepCard({
