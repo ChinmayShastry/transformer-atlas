@@ -1,0 +1,26 @@
+id: attention-is-all-you-need
+title: "Attention Is All You Need" (2017)
+oneliner: Google researchers removed recurrence entirely and built a model out of nothing but attention and feed-forward layers — and it worked better, and trained far faster, than anything before it.
+visual: selfattention
+---
+The 2017 paper "Attention Is All You Need" (Vaswani et al.) asked a radical question: if attention is what actually solves the long-range dependency problem, why keep the slow, sequential RNN around at all? Their answer was the Transformer — a model built entirely from attention and simple feed-forward layers, with zero recurrence.
+
+The key mechanism is self-attention: instead of a decoder attending over an encoder, every token in a sequence attends to every other token in that same sequence, including itself, all at once. Each token is projected into three vectors — a Query, a Key, and a Value. A token's Query is compared against every other token's Key to produce a relevance score; those scores are turned into weights via softmax; and the output for that token is a weighted sum of all the Value vectors. Crucially, this computation for every token can happen in parallel — no waiting for the previous step to finish — which is what let Transformers finally take advantage of GPUs at scale. Removing recurrence didn't just make training faster; it made it possible to train on far more data, which turned out to matter more than almost anything else.
+%%%
+id: multi-head-attention
+title: Multi-Head Attention — Many Perspectives at Once
+oneliner: Rather than computing one attention pattern, the model runs several in parallel — each "head" free to specialize in a different kind of relationship, like grammar, coreference, or topic.
+visual: multihead
+---
+A single attention computation forces the model to blend every kind of relevance into one weighting per token — but language has many simultaneous kinds of relevance. A pronoun needs to find its antecedent. A verb needs to find its subject. A word needs to find topically related words elsewhere in the passage. Cramming all of that into one attention pattern is limiting.
+
+Multi-head attention splits the Query, Key, and Value projections into several smaller subspaces — "heads" — and runs self-attention independently within each one, then concatenates the results back together. Nothing forces any head to specialize in anything in particular; it emerges from training. But empirically, when researchers visualize trained Transformers, individual heads do specialize — some track syntactic structure, some track adjacent words, some track long-range coreference. It's the same idea as an ensemble: several narrower, independent views combined tend to capture more than one wide view alone, at roughly the same computational cost since each head works on a smaller slice of the vector.
+%%%
+id: positional-encoding
+title: Positional Encoding — Restoring a Sense of Order
+oneliner: Self-attention has no built-in notion of word order — it treats a sentence like a bag of tokens — so the Transformer injects position information directly into each token's vector using sine and cosine waves.
+visual: posenc
+---
+Here's a subtle consequence of removing recurrence: an RNN knows word order automatically, because it literally processes words in order. Self-attention doesn't — mathematically, if you shuffled the input tokens, self-attention would produce the same set of outputs, just shuffled the same way. That's a problem, because "dog bites man" and "man bites dog" should not mean the same thing.
+
+The original Transformer's fix was positional encoding: before the first layer, add a vector to each token's embedding that encodes its position in the sequence, built from sine and cosine functions at different frequencies. Low-frequency waves distinguish coarse, far-apart positions; high-frequency waves distinguish fine-grained, nearby positions — together they give every position a unique, smoothly-varying signature that the model can learn to use. Because it's just addition before the first layer, it costs almost nothing computationally, and because sine/cosine functions are smooth and periodic, the model can generalize reasonably well to sequence lengths it didn't see during training. Later architectures (like RoPE, used in most modern LLMs) refined this idea, but the core insight — order has to be added back in explicitly — has stuck around ever since.

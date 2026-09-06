@@ -1,0 +1,17 @@
+id: bert-vs-gpt
+title: BERT vs. GPT — Two Ways to Pretrain
+oneliner: BERT reads the whole sentence at once, in both directions, to build the deepest possible understanding; GPT reads strictly left-to-right, because its job is to predict what comes next.
+visual: bertgpt
+---
+Once the Transformer existed, the field split it into two lineages by keeping different halves of the original encoder-decoder design, and training them differently. BERT (2018, Google) kept the encoder and trained it as a bidirectional model: it randomly masks out some tokens in a sentence and asks the model to predict them using context from both the left and the right simultaneously. That full-sentence view makes BERT excellent at understanding tasks — classification, sentiment, question answering — where you have the whole input available and just need to interpret it.
+
+GPT (2018 onward, OpenAI) kept the decoder and trained it autoregressively: it only ever sees the tokens that came before the current position, and its sole job is to predict the next token. That causal, left-to-right constraint looks like a limitation, but it's exactly what you need for generation — writing text one token at a time, each one conditioned only on what's been written so far. It also enables something BERT's bidirectional objective can't do as naturally: keep predicting indefinitely, one token feeding into the next, which is the mechanism behind every chatbot response you've ever read. Neither direction is strictly better — they were optimized for different jobs — but GPT's generative framing turned out to scale into something far more general-purpose than anyone expected.
+%%%
+id: scaling-laws
+title: Scaling Up — GPT-3, RLHF, and Modern LLMs
+oneliner: Making GPT bigger and feeding it more data didn't just make it marginally better — past a certain scale, entirely new abilities showed up that smaller versions simply couldn't do, and a later fine-tuning step taught it to actually follow instructions.
+visual: scaling
+---
+GPT-2 (2019, 1.5B parameters) showed that a big enough next-token predictor could write surprisingly coherent paragraphs. GPT-3 (2020, 175B parameters) showed something stranger: capabilities like few-shot learning, basic arithmetic, and rudimentary reasoning emerged without ever being explicitly trained for them — they appeared as a side effect of scale. Researchers formalized this relationship as scaling laws: loss decreases smoothly and predictably as you increase model size, data, and compute together, which meant labs could forecast — and chase — performance simply by scaling up.
+
+But a raw next-token predictor trained on internet text isn't naturally helpful, honest, or safe — it just continues text plausibly, including toxic or wrong text. The step that turned GPT-3-style models into assistants like ChatGPT was RLHF (Reinforcement Learning from Human Feedback): human raters rank different model outputs, a reward model learns to predict those preferences, and the language model is then fine-tuned to produce outputs the reward model scores highly. This is why a raw pretrained model and its instruction-tuned, RLHF'd counterpart can feel like completely different products even though the underlying Transformer architecture — self-attention, multi-head attention, positional encoding — hasn't fundamentally changed since 2017. Every model since, including gpt-4o-mini, is still, at its core, the same idea from "Attention Is All You Need," scaled up and aligned to be useful.
