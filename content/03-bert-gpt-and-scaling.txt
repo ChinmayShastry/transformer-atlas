@@ -1,6 +1,6 @@
 id: bert-vs-gpt
 title: BERT vs. GPT — Two Ways to Pretrain
-oneliner: BERT reads the whole sentence at once, in both directions, to build the deepest possible understanding; GPT reads strictly left-to-right, because its job is to predict what comes next.
+oneliner: BERT reads in both directions to understand. GPT reads only backwards, so it can write.
 visual: bertgpt
 ---
 Once the Transformer existed, the field split it into two lineages by keeping different halves of the original encoder-decoder design, and training them differently. BERT (2018, Google) kept the encoder and trained it as a bidirectional model: it randomly masks out some tokens in a sentence and asks the model to predict them using context from both the left and the right simultaneously. That full-sentence view makes BERT excellent at understanding tasks — classification, sentiment, question answering — where you have the whole input available and just need to interpret it.
@@ -9,7 +9,7 @@ GPT (2018 onward, OpenAI) kept the decoder and trained it autoregressively: it o
 %%%
 id: kv-cache
 title: The KV Cache — Why Generation Isn't Absurdly Slow
-oneliner: Generating token 500 should mean re-running attention over all 499 previous tokens — instead models stash every token's Key and Value vectors and reuse them, turning quadratic work into linear.
+oneliner: Writing word 500 shouldn't mean re-reading 499 words. So models keep the work they've done.
 visual: kvcache
 ---
 Here's a problem hiding inside autoregressive generation. To produce each new token, the model runs self-attention over the entire sequence so far. Naively, generating a 500-token response means running attention over 1 token, then 2, then 3, all the way to 500 — roughly 125,000 token-steps of redundant work, where almost every step recomputes Keys and Values it already computed moments ago.
@@ -20,7 +20,7 @@ This is why the first token of a chatbot response often takes noticeably longer 
 %%%
 id: scaling-laws
 title: Scaling Up — GPT-3, RLHF, and Modern LLMs
-oneliner: Making GPT bigger and feeding it more data didn't just make it marginally better — past a certain scale, entirely new abilities showed up that smaller versions simply couldn't do, and a later fine-tuning step taught it to actually follow instructions.
+oneliner: Past a certain size, abilities nobody trained for appeared — and human feedback made it useful.
 visual: scaling
 ---
 GPT-2 (2019, 1.5B parameters) showed that a big enough next-token predictor could write surprisingly coherent paragraphs. GPT-3 (2020, 175B parameters) showed something stranger: capabilities like few-shot learning, basic arithmetic, and rudimentary reasoning emerged without ever being explicitly trained for them — they appeared as a side effect of scale. Researchers formalized this relationship as scaling laws: loss decreases smoothly and predictably as you increase model size, data, and compute together, which meant labs could forecast — and chase — performance simply by scaling up.
@@ -29,7 +29,7 @@ But a raw next-token predictor trained on internet text isn't naturally helpful,
 %%%
 id: moe
 title: Mixture of Experts — Getting Huge Without Getting Slow
-oneliner: Scaling laws say bigger is better, but bigger is also slower and pricier — so modern models split their feed-forward layers into many "experts" and route each token through only a couple of them.
+oneliner: Hold a huge number of parameters, but only wake a couple of them per word.
 visual: moe
 ---
 Dense scaling has an uncomfortable cost curve: if every parameter has to be multiplied for every token, then doubling the parameter count roughly doubles the compute for each token you process. Scaling laws promised better models from more parameters, but nobody wants inference costs scaling in lockstep.

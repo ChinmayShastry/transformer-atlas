@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Slider from "./Slider";
 import { useApiKey } from "./ApiKeyContext";
+import { useUsage } from "./UsageContext";
 import ToolCallingDemo from "./ToolCallingDemo";
 import EmbeddingsDemo from "./EmbeddingsDemo";
 
@@ -32,6 +33,7 @@ function estimateCost(usage: Usage | null): number | null {
 
 export default function ApiExplorer() {
   const { apiKey, hasKey } = useApiKey();
+  const { recordChat } = useUsage();
 
   const [systemPrompt, setSystemPrompt] = useState(
     "You are a helpful, concise assistant."
@@ -135,6 +137,7 @@ export default function ApiExplorer() {
 
         setHistory((h) => [...h, { role: "assistant", content: assistantText }]);
         setUsage(finalUsage);
+        recordChat(finalUsage);
         setLiveText("");
       } else {
         const res = await fetch("/api/chat", {
@@ -149,6 +152,7 @@ export default function ApiExplorer() {
           { role: "assistant", content: data.message?.content ?? "" },
         ]);
         setUsage(data.usage);
+        recordChat(data.usage);
         setRawResponse(data.raw);
       }
     } catch (e) {

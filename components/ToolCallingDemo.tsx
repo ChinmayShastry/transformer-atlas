@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useApiKey } from "./ApiKeyContext";
+import { useUsage } from "./UsageContext";
 
 const WEATHER_TOOL = {
   type: "function",
@@ -32,6 +33,7 @@ interface ToolCall {
 
 export default function ToolCallingDemo() {
   const { apiKey, hasKey } = useApiKey();
+  const { recordChat } = useUsage();
   const [prompt, setPrompt] = useState("What's the weather in Tokyo right now?");
   const [toolCall, setToolCall] = useState<ToolCall | null>(null);
   const [toolResult, setToolResult] = useState(
@@ -60,6 +62,7 @@ export default function ToolCallingDemo() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Request failed.");
+      recordChat(data.usage);
       const call = data.message?.tool_calls?.[0];
       if (!call) {
         setError(
@@ -112,6 +115,7 @@ export default function ToolCallingDemo() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Request failed.");
+      recordChat(data.usage);
       setFinalAnswer(data.message?.content ?? "");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong.");

@@ -1,6 +1,6 @@
 id: intro
 title: The Journey of Sequence Models
-oneliner: Every breakthrough in language AI is a story about one problem — how do you get a machine to remember context — solved in a smarter way each time.
+oneliner: Forty years of one question: how do you get a machine to remember what it read?
 visual: timeline
 ---
 Before Transformers existed, researchers spent decades trying to get machines to understand sequences: sentences, speech, DNA, code. The central challenge never changed — a word's meaning depends on the words around it, sometimes words that appeared far earlier in the sequence. What changed, generation after generation, was how much of that surrounding context a model could actually use, and how efficiently it could learn from it.
@@ -9,7 +9,7 @@ This course walks through that evolution in order: the recurrent networks that r
 %%%
 id: rnn-lstm
 title: RNNs & LSTMs — Reading One Word at a Time
-oneliner: Recurrent networks process a sequence step by step, carrying a single "memory" vector forward — so information from early words has to survive a long relay race to influence later ones.
+oneliner: Early models read one word at a time, and forgot the beginning by the end.
 visual: rnn
 ---
 A Recurrent Neural Network (RNN) reads a sentence the way you'd read it through a keyhole: one token at a time, left to right. At each step it updates a hidden state — a fixed-size vector meant to summarize "everything relevant so far" — and passes that single vector forward to the next step. There's no going back to re-read; the entire history of the sentence has to be compressed into that one evolving vector.
@@ -18,7 +18,7 @@ This creates two problems. First, it's inherently sequential — step 50 cannot 
 %%%
 id: attention-mechanism
 title: Attention — Letting the Model Look Back
-oneliner: Instead of forcing the whole sentence through one bottleneck vector, attention lets the model look back at every earlier word directly and decide, freshly at each step, which ones matter right now.
+oneliner: What if the model could look back at every word, instead of trusting one summary?
 visual: attention-intro
 ---
 In 2014-2015, Bahdanau and later Luong proposed a fix for the sequence-to-sequence bottleneck: instead of relying only on the encoder's final hidden state, let the decoder look back at all of the encoder's hidden states at every single output step, and learn to weight them. For each word it's about to generate, the model computes a relevance score against every input word, turns those scores into weights (via softmax, so they sum to 1), and takes a weighted average — an "attention" over the input.

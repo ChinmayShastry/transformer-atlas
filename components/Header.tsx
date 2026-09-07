@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useApiKey } from "./ApiKeyContext";
 import ThemeToggle from "./ThemeToggle";
+import UsageMeter from "./UsageMeter";
 
 interface HeaderProps {
   view: "course" | "playground" | "api";
@@ -53,6 +54,7 @@ export default function Header({ view, setView }: HeaderProps) {
         </div>
 
         <div className="flex items-center gap-2">
+          <UsageMeter />
           <ThemeToggle />
           {editing ? (
             <div className="flex items-center gap-1.5">

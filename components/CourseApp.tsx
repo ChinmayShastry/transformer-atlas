@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { Step } from "@/lib/types";
 import { ApiKeyProvider } from "./ApiKeyContext";
 import { SentenceProvider } from "./SentenceContext";
+import { UsageProvider } from "./UsageContext";
 import ApiKeyGate from "./ApiKeyGate";
 import Header from "./Header";
 import StepCard from "./StepCard";
@@ -15,9 +16,11 @@ import CompletionCard from "./CompletionCard";
 export default function CourseApp({ steps }: { steps: Step[] }) {
   return (
     <ApiKeyProvider>
-      <SentenceProvider>
-        <CourseShell steps={steps} />
-      </SentenceProvider>
+      <UsageProvider>
+        <SentenceProvider>
+          <CourseShell steps={steps} />
+        </SentenceProvider>
+      </UsageProvider>
     </ApiKeyProvider>
   );
 }

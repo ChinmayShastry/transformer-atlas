@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
     }
 
     const text: string = data?.choices?.[0]?.message?.content ?? "";
-    return NextResponse.json({ text: text.trim() });
+    return NextResponse.json({ text: text.trim(), usage: data?.usage ?? null });
   } catch {
     return NextResponse.json(
       { error: "Request to OpenAI failed or timed out." },

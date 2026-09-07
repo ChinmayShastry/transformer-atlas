@@ -7,10 +7,12 @@ import { softmax, cosineSimilarity, zScore } from "@/lib/math";
 import { useSentence } from "../SentenceContext";
 import { tokenizeSentence, relatednessScores } from "@/lib/similarity";
 import { useApiKey } from "../ApiKeyContext";
+import { useUsage } from "../UsageContext";
 
 export default function SelfAttentionVisual() {
   const { sentence } = useSentence();
   const { apiKey, hasKey } = useApiKey();
+  const { recordEmbedding } = useUsage();
   const tokens = tokenizeSentence(sentence, 12);
 
   const [queryIndex, setQueryIndex] = useState(0);
@@ -50,6 +52,7 @@ export default function SelfAttentionVisual() {
         if (cancelled) return;
         setEmbeddings(data.embeddings);
         setEmbeddedFor(sentenceKey);
+        recordEmbedding(data.usage);
       })
       .catch((e) => {
         if (!cancelled) {

@@ -1,6 +1,6 @@
 id: attention-is-all-you-need
 title: "Attention Is All You Need" (2017)
-oneliner: Google researchers removed recurrence entirely and built a model out of nothing but attention and feed-forward layers — and it worked better, and trained far faster, than anything before it.
+oneliner: In 2017, Google threw out the sequential part entirely. Attention alone worked better.
 visual: selfattention
 ---
 The 2017 paper "Attention Is All You Need" (Vaswani et al.) asked a radical question: if attention is what actually solves the long-range dependency problem, why keep the slow, sequential RNN around at all? Their answer was the Transformer — a model built entirely from attention and simple feed-forward layers, with zero recurrence.
@@ -9,7 +9,7 @@ The key mechanism is self-attention: instead of a decoder attending over an enco
 %%%
 id: multi-head-attention
 title: Multi-Head Attention — Many Perspectives at Once
-oneliner: Rather than computing one attention pattern, the model runs several in parallel — each "head" free to specialize in a different kind of relationship, like grammar, coreference, or topic.
+oneliner: Run several attentions side by side, and each one learns to notice something different.
 visual: multihead
 ---
 A single attention computation forces the model to blend every kind of relevance into one weighting per token — but language has many simultaneous kinds of relevance. A pronoun needs to find its antecedent. A verb needs to find its subject. A word needs to find topically related words elsewhere in the passage. Cramming all of that into one attention pattern is limiting.
@@ -18,7 +18,7 @@ Multi-head attention splits the Query, Key, and Value projections into several s
 %%%
 id: positional-encoding
 title: Positional Encoding — Restoring a Sense of Order
-oneliner: Self-attention has no built-in notion of word order — it treats a sentence like a bag of tokens — so the Transformer injects position information directly into each token's vector using sine and cosine waves.
+oneliner: Attention sees a bag of words with no order. Position has to be added back.
 visual: posenc
 ---
 Here's a subtle consequence of removing recurrence: an RNN knows word order automatically, because it literally processes words in order. Self-attention doesn't — mathematically, if you shuffled the input tokens, self-attention would produce the same set of outputs, just shuffled the same way. That's a problem, because "dog bites man" and "man bites dog" should not mean the same thing.
@@ -27,7 +27,7 @@ The original Transformer's fix was positional encoding: before the first layer, 
 %%%
 id: rope
 title: RoPE — What Modern Models Actually Use
-oneliner: Nearly every LLM you use today dropped the original additive encoding for rotary embeddings, which rotate each token's vector by an angle set by its position — so attention scores end up depending only on how far apart two tokens are.
+oneliner: Today's models encode position by rotation, so only the distance between two words matters.
 visual: rope
 ---
 The 2017 additive positional encoding had a weakness: it tells each token where it sits in absolute terms ("I am token 5"), but what attention usually needs is relative ("this token is 3 places before that one"). A sentence that's shifted by a few words should mostly behave the same way, and absolute encodings don't guarantee that.

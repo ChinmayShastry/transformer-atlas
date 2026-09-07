@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useApiKey } from "./ApiKeyContext";
+import { useUsage } from "./UsageContext";
 import { cosineSimilarity } from "@/lib/math";
 
 const PRESETS: [string, string][] = [
@@ -12,6 +13,7 @@ const PRESETS: [string, string][] = [
 
 export default function EmbeddingsDemo() {
   const { apiKey, hasKey } = useApiKey();
+  const { recordEmbedding } = useUsage();
   const [a, setA] = useState("a dog chasing a ball");
   const [b, setB] = useState("a puppy playing fetch");
   const [similarity, setSimilarity] = useState<number | null>(null);
@@ -34,6 +36,7 @@ export default function EmbeddingsDemo() {
       if (!res.ok) throw new Error(data.error ?? "Request failed.");
       setSimilarity(cosineSimilarity(data.embeddings[0], data.embeddings[1]));
       setDimensions(data.dimensions);
+      recordEmbedding(data.usage);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong.");
     } finally {

@@ -3,9 +3,11 @@
 import { useState } from "react";
 import Slider from "./Slider";
 import { useApiKey } from "./ApiKeyContext";
+import { useUsage } from "./UsageContext";
 
 export default function LiveGenerationPanel() {
   const { apiKey, hasKey } = useApiKey();
+  const { recordChat } = useUsage();
   const [prompt, setPrompt] = useState("The weather today is");
   const [temperature, setTemperature] = useState(0.7);
   const [result, setResult] = useState<string | null>(null);
@@ -28,6 +30,7 @@ export default function LiveGenerationPanel() {
         setError(data.error ?? "Something went wrong.");
       } else {
         setResult(data.text);
+        recordChat(data.usage);
       }
     } catch {
       setError("Network error — request could not be sent.");
