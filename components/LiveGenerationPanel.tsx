@@ -15,7 +15,6 @@ export default function LiveGenerationPanel() {
   const [loading, setLoading] = useState(false);
 
   async function handleGenerate() {
-    if (!apiKey) return;
     setLoading(true);
     setError(null);
     setResult(null);
@@ -46,9 +45,7 @@ export default function LiveGenerationPanel() {
           Try it live — real gpt-4o-mini
         </h4>
         {!hasKey && (
-          <span className="text-[11px] text-muted">
-            add your API key above to unlock
-          </span>
+          <span className="text-[11px] text-muted">free demo · no key needed</span>
         )}
       </div>
 
@@ -56,7 +53,6 @@ export default function LiveGenerationPanel() {
         type="text"
         value={prompt}
         onChange={(e) => setPrompt(e.target.value.slice(0, 120))}
-        disabled={!hasKey}
         placeholder="Type the start of a sentence..."
         className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm font-mono disabled:opacity-50 focus:outline-none focus:border-accent"
       />
@@ -74,7 +70,7 @@ export default function LiveGenerationPanel() {
 
       <button
         onClick={handleGenerate}
-        disabled={!hasKey || loading || !prompt.trim()}
+        disabled={loading || !prompt.trim()}
         className="w-full rounded-md bg-accent text-on-accent font-medium text-sm py-2 disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110 transition"
       >
         {loading ? "Generating…" : "Generate completion"}

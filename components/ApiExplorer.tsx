@@ -68,7 +68,7 @@ export default function ApiExplorer() {
   }, [history, liveText]);
 
   async function send() {
-    if (!apiKey || !draft.trim() || sending) return;
+    if (!draft.trim() || sending) return;
     setSending(true);
     setError(null);
     setLiveText("");
@@ -203,7 +203,8 @@ export default function ApiExplorer() {
 
       {!hasKey && (
         <div className="rounded-lg border border-accent-warm/40 bg-accent-warm/10 px-4 py-3 text-sm text-accent-warm">
-          Add your OpenAI API key (top of page) to send real requests here.
+          These call gpt-4o-mini for real, on a small free allowance. Add your
+          own key (top of page) for unlimited use — it stays in your browser.
         </div>
       )}
 
@@ -216,7 +217,6 @@ export default function ApiExplorer() {
             type="text"
             value={systemPrompt}
             onChange={(e) => setSystemPrompt(e.target.value.slice(0, 300))}
-            disabled={!hasKey}
             className="w-full rounded-md border border-border bg-surface-2 px-3 py-2 text-sm font-mono disabled:opacity-50 focus:outline-none focus:border-accent"
           />
         </div>
@@ -265,13 +265,12 @@ export default function ApiExplorer() {
             onKeyDown={(e) => {
               if (e.key === "Enter" && !sending) send();
             }}
-            disabled={!hasKey}
             placeholder="Type a message..."
             className="flex-1 rounded-md border border-border bg-surface-2 px-3 py-2 text-sm font-mono disabled:opacity-50 focus:outline-none focus:border-accent"
           />
           <button
             onClick={send}
-            disabled={!hasKey || sending || !draft.trim()}
+            disabled={sending || !draft.trim()}
             className="px-4 py-2 rounded-md bg-accent text-on-accent font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110 transition"
           >
             {sending ? "Sending…" : "Send"}

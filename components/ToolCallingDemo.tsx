@@ -44,7 +44,6 @@ export default function ToolCallingDemo() {
   const [error, setError] = useState<string | null>(null);
 
   async function requestToolCall() {
-    if (!apiKey) return;
     setLoading("call");
     setError(null);
     setToolCall(null);
@@ -79,7 +78,7 @@ export default function ToolCallingDemo() {
   }
 
   async function sendResultBack() {
-    if (!apiKey || !toolCall) return;
+    if (!toolCall) return;
     setLoading("answer");
     setError(null);
     try {
@@ -154,12 +153,11 @@ export default function ToolCallingDemo() {
             type="text"
             value={prompt}
             onChange={(e) => setPrompt(e.target.value.slice(0, 200))}
-            disabled={!hasKey}
             className="flex-1 rounded-md border border-border bg-surface-2 px-3 py-2 text-sm font-mono disabled:opacity-50 focus:outline-none focus:border-accent"
           />
           <button
             onClick={requestToolCall}
-            disabled={!hasKey || loading !== "none" || !prompt.trim()}
+            disabled={loading !== "none" || !prompt.trim()}
             className="px-3 py-2 rounded-md bg-accent text-on-accent font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110 transition whitespace-nowrap"
           >
             {loading === "call" ? "Asking…" : "Ask"}

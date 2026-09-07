@@ -35,7 +35,7 @@ export default function SelfAttentionVisual() {
   // One embeddings call per sentence — the query slider then recomputes
   // cosine similarities locally, so dragging it costs nothing.
   useEffect(() => {
-    if (!useReal || !apiKey || tokens.length < 2 || !embeddingsStale || loading) {
+    if (!useReal || tokens.length < 2 || !embeddingsStale || loading) {
       return;
     }
     let cancelled = false;
@@ -106,8 +106,7 @@ export default function SelfAttentionVisual() {
         </button>
         <button
           onClick={() => setUseReal(true)}
-          disabled={!hasKey}
-          className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
+          className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
             useReal
               ? "bg-accent-2 text-on-accent border-accent-2"
               : "border-border text-muted hover:text-foreground"
@@ -119,9 +118,7 @@ export default function SelfAttentionVisual() {
           <span className="text-xs text-muted">embedding your sentence…</span>
         )}
         {!hasKey && (
-          <span className="text-[11px] text-muted">
-            add an API key to unlock real embeddings
-          </span>
+          <span className="text-[11px] text-muted">free demo · no key needed</span>
         )}
       </div>
 

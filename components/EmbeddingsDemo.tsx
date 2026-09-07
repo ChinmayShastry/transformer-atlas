@@ -22,7 +22,7 @@ export default function EmbeddingsDemo() {
   const [error, setError] = useState<string | null>(null);
 
   async function compare() {
-    if (!apiKey || !a.trim() || !b.trim()) return;
+    if (!a.trim() || !b.trim()) return;
     setLoading(true);
     setError(null);
     setSimilarity(null);
@@ -64,14 +64,12 @@ export default function EmbeddingsDemo() {
           type="text"
           value={a}
           onChange={(e) => setA(e.target.value.slice(0, 200))}
-          disabled={!hasKey}
           className="w-full rounded-md border border-border bg-surface-2 px-3 py-2 text-sm font-mono disabled:opacity-50 focus:outline-none focus:border-accent"
         />
         <input
           type="text"
           value={b}
           onChange={(e) => setB(e.target.value.slice(0, 200))}
-          disabled={!hasKey}
           className="w-full rounded-md border border-border bg-surface-2 px-3 py-2 text-sm font-mono disabled:opacity-50 focus:outline-none focus:border-accent"
         />
       </div>
@@ -85,8 +83,7 @@ export default function EmbeddingsDemo() {
               setB(pb);
               setSimilarity(null);
             }}
-            disabled={!hasKey}
-            className="text-[11px] px-2 py-1 rounded-full border border-border text-muted hover:text-foreground disabled:opacity-40 transition-colors"
+              className="text-[11px] px-2 py-1 rounded-full border border-border text-muted hover:text-foreground disabled:opacity-40 transition-colors"
           >
             {pa.slice(0, 18)}… vs {pb.slice(0, 18)}…
           </button>
@@ -95,7 +92,7 @@ export default function EmbeddingsDemo() {
 
       <button
         onClick={compare}
-        disabled={!hasKey || loading || !a.trim() || !b.trim()}
+        disabled={loading || !a.trim() || !b.trim()}
         className="w-full rounded-md bg-accent text-on-accent font-medium text-sm py-2 disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110 transition"
       >
         {loading ? "Embedding…" : "Compare meaning"}

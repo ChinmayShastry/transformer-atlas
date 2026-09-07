@@ -33,7 +33,10 @@ export default function PositionalEncodingVisual() {
     const points = Array.from({ length: SEQ_LEN }).map((_, p) => {
       const x = (p / (SEQ_LEN - 1)) * WIDTH;
       const y = HEIGHT / 2 - encode(p, d) * (HEIGHT / 2 - 8);
-      return `${x},${y}`;
+      // Rounded because Math.sin/cos are not bit-identical between Node and
+      // the browser: unrounded values serialise differently on each side and
+      // React reports a hydration mismatch for every curve.
+      return `${x.toFixed(2)},${y.toFixed(2)}`;
     });
     return points.join(" ");
   });

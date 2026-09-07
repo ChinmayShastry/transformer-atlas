@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { resolveKey } from "@/lib/allowance";
 
 interface EmbeddingsBody {
   texts: string[];
@@ -13,14 +14,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
 
-  const { texts, apiKey } = body;
+  const { texts } = body;
 
-  if (!apiKey || typeof apiKey !== "string" || !apiKey.startsWith("sk-")) {
+  const resolved = resolveKey(body.apiKey, req);
+  if (!resolved.key) {
     return NextResponse.json(
-      { error: "A valid OpenAI API key is required." },
-      { status: 401 }
+      { error: resolved.error, needsKey: true },
+      { status: resolved.status ?? 401 }
     );
   }
+  const apiKey = resolved.key;
+
   if (!Array.isArray(texts) || texts.length === 0 || texts.length > 40) {
     return NextResponse.json(
       { error: "Between 1 and 40 texts are required." },

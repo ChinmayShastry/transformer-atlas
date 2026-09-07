@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { resolveKey } from "@/lib/allowance";
 
 interface GenerateBody {
   prompt: string;
@@ -14,14 +15,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
 
-  const { prompt, temperature, apiKey } = body;
+  const { prompt, temperature } = body;
 
-  if (!apiKey || typeof apiKey !== "string" || !apiKey.startsWith("sk-")) {
+  const resolved = resolveKey(body.apiKey, req);
+  if (!resolved.key) {
     return NextResponse.json(
-      { error: "A valid OpenAI API key is required." },
-      { status: 401 }
+      { error: resolved.error, needsKey: true },
+      { status: resolved.status ?? 401 }
     );
   }
+  const apiKey = resolved.key;
+
   if (!prompt || typeof prompt !== "string" || prompt.length > 500) {
     return NextResponse.json(
       { error: "Prompt is required and must be under 500 characters." },
