@@ -8,11 +8,11 @@ const SAMPLE =
   "Transformers revolutionized natural language understanding by replacing recurrence with self-attention.";
 
 const PALETTE = [
-  "rgba(240,163,64,0.32)",
-  "rgba(201,180,88,0.30)",
-  "rgba(217,95,60,0.28)",
-  "rgba(154,165,104,0.30)",
-  "rgba(201,138,106,0.30)",
+  "var(--chip-1)",
+  "var(--chip-2)",
+  "var(--chip-3)",
+  "var(--chip-4)",
+  "var(--chip-5)",
 ];
 
 export default function TokenizerPlayground() {

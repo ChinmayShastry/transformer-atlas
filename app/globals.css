@@ -1,11 +1,76 @@
 @import "tailwindcss";
 
-/* Warm-dark "amber instrument" palette. Every hue here is warm; the three
-   accents are separated by brightness and saturation rather than hue, which
-   is what keeps the colour-encoded visuals legible. Contrast measured against
-   --background: foreground 16.3, muted 6.3, accent 9.1, accent-2 9.2,
-   accent-warm 5.1 — all WCAG AA. */
+/* Two warm palettes. Light is the base so the un-stamped document (a viewer
+   on "system" with a light OS) gets a complete set; dark redefines only the
+   tokens, once for prefers-color-scheme and once for an explicit toggle.
+   Every value measured against its own background — all WCAG AA, and the
+   four chart hues clear the 3:1 threshold for graphical objects. */
 :root {
+  --background: #f2e8d5;
+  --surface: #fbf5e9;
+  --surface-2: #e9dcc4;
+  --border: #cbb994;
+  --foreground: #2c2318;
+  --muted: #6b5c46;
+  --accent: #9c4416;
+  --accent-2: #6f5720;
+  --accent-warm: #a63d2f;
+  --danger: #a3281e;
+  /* text sitting on a filled accent surface — light ink on dark rust */
+  --on-accent: #fbf5e9;
+
+  /* Chart series. Colour alone barely separates these by value, so the
+     curves also carry dash patterns. */
+  --chart-1: #8a3a10;
+  --chart-2: #96661a;
+  --chart-3: #5f2a22;
+  --chart-4: #55663a;
+
+  --chip-1: rgba(156, 68, 22, 0.20);
+  --chip-2: rgba(111, 87, 32, 0.20);
+  --chip-3: rgba(166, 61, 47, 0.18);
+  --chip-4: rgba(85, 102, 58, 0.20);
+  --chip-5: rgba(150, 102, 26, 0.20);
+
+  --glow-a: rgba(156, 68, 22, 0.10);
+  --glow-b: rgba(166, 61, 47, 0.07);
+  --grain-opacity: 0.16;
+  --selection: rgba(156, 68, 22, 0.22);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --background: #140f0a;
+    --surface: #1e1710;
+    --surface-2: #2a2016;
+    --border: #3d2f21;
+    --foreground: #f7ecdc;
+    --muted: #a89076;
+    --accent: #f0a340;
+    --accent-2: #c9b458;
+    --accent-warm: #d95f3c;
+    --danger: #e05252;
+    --on-accent: #140f0a;
+
+    --chart-1: #f0a340;
+    --chart-2: #c9b458;
+    --chart-3: #d95f3c;
+    --chart-4: #9aa568;
+
+    --chip-1: rgba(240, 163, 64, 0.32);
+    --chip-2: rgba(201, 180, 88, 0.3);
+    --chip-3: rgba(217, 95, 60, 0.28);
+    --chip-4: rgba(154, 165, 104, 0.3);
+    --chip-5: rgba(201, 138, 106, 0.3);
+
+    --glow-a: rgba(240, 163, 64, 0.13);
+    --glow-b: rgba(217, 95, 60, 0.09);
+    --grain-opacity: 0.42;
+    --selection: rgba(240, 163, 64, 0.32);
+  }
+}
+
+:root[data-theme="dark"] {
   --background: #140f0a;
   --surface: #1e1710;
   --surface-2: #2a2016;
@@ -16,8 +81,23 @@
   --accent-2: #c9b458;
   --accent-warm: #d95f3c;
   --danger: #e05252;
-  /* text that sits on top of a filled accent surface */
   --on-accent: #140f0a;
+
+  --chart-1: #f0a340;
+  --chart-2: #c9b458;
+  --chart-3: #d95f3c;
+  --chart-4: #9aa568;
+
+  --chip-1: rgba(240, 163, 64, 0.32);
+  --chip-2: rgba(201, 180, 88, 0.3);
+  --chip-3: rgba(217, 95, 60, 0.28);
+  --chip-4: rgba(154, 165, 104, 0.3);
+  --chip-5: rgba(201, 138, 106, 0.3);
+
+  --glow-a: rgba(240, 163, 64, 0.13);
+  --glow-b: rgba(217, 95, 60, 0.09);
+  --grain-opacity: 0.42;
+  --selection: rgba(240, 163, 64, 0.32);
 }
 
 @theme inline {
@@ -38,34 +118,36 @@
 }
 
 html {
+  color-scheme: light dark;
+}
+:root[data-theme="dark"] {
   color-scheme: dark;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
 }
 
 body {
   background: radial-gradient(
       1200px 600px at 80% -10%,
-      rgba(240, 163, 64, 0.13),
+      var(--glow-a),
       transparent
     ),
-    radial-gradient(
-      900px 500px at 0% 100%,
-      rgba(217, 95, 60, 0.09),
-      transparent
-    ),
+    radial-gradient(900px 500px at 0% 100%, var(--glow-b), transparent),
     var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
-/* Fine grain so surfaces read as a material rather than flat fills. Fixed so
-   it doesn't slide against content while scrolling. */
+/* Fine grain so surfaces read as a material rather than flat fills. Much
+   lighter on the light theme, where the same noise reads as dirt. */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.42;
+  opacity: var(--grain-opacity);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.3'/%3E%3C/svg%3E");
 }
 
@@ -75,7 +157,7 @@ body > * {
 }
 
 ::selection {
-  background: rgba(240, 163, 64, 0.32);
+  background: var(--selection);
 }
 
 /* Custom range slider */
@@ -110,11 +192,13 @@ input[type="range"]::-webkit-slider-thumb {
 
 input[type="range"]::-webkit-slider-thumb:hover {
   transform: scale(1.15);
-  box-shadow: 0 0 0 1px var(--accent), 0 0 14px rgba(240, 163, 64, 0.45);
+  box-shadow: 0 0 0 1px var(--accent),
+    0 0 14px color-mix(in srgb, var(--accent) 45%, transparent);
 }
 
 input[type="range"]:focus-visible::-webkit-slider-thumb {
-  box-shadow: 0 0 0 1px var(--accent), 0 0 0 4px rgba(240, 163, 64, 0.35);
+  box-shadow: 0 0 0 1px var(--accent),
+    0 0 0 4px color-mix(in srgb, var(--accent) 35%, transparent);
 }
 
 input[type="range"]::-moz-range-thumb {
@@ -151,26 +235,8 @@ input[type="range"]::-moz-range-thumb {
   animation: fade-in-up 0.4s ease both;
 }
 
-/* Children arrive in sequence rather than all at once. */
-.stagger > * {
-  animation: fade-in-up 0.42s ease both;
-}
-.stagger > *:nth-child(2) {
-  animation-delay: 0.06s;
-}
-.stagger > *:nth-child(3) {
-  animation-delay: 0.12s;
-}
-.stagger > *:nth-child(4) {
-  animation-delay: 0.18s;
-}
-.stagger > *:nth-child(n + 5) {
-  animation-delay: 0.24s;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .animate-fade-in-up,
-  .stagger > * {
+  .animate-fade-in-up {
     animation: none;
   }
   input[type="range"]::-webkit-slider-thumb {

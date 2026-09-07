@@ -6,10 +6,17 @@ import Slider from "../Slider";
 const SEQ_LEN = 32;
 const DIMS = 4;
 const D_MODEL = 16;
-// Four curves need four separable hues. Amber, brass and ember come straight
-// from the palette; the fourth is a muted sage that still reads as part of a
-// warm earth set while staying distinguishable from the other three.
-const COLORS = ["#f0a340", "#c9b458", "#d95f3c", "#9aa568"];
+// Themed via CSS variables so both palettes get hues that actually contrast
+// with their own background. On the light theme the four sit close together in
+// lightness, so each curve also carries its own dash pattern — that keeps them
+// separable when they overlap, and for colour-blind readers in either theme.
+const COLORS = [
+  "var(--chart-1)",
+  "var(--chart-2)",
+  "var(--chart-3)",
+  "var(--chart-4)",
+];
+const DASHES = ["none", "6 3", "2 3", "9 3 2 3"];
 
 function encode(pos: number, dim: number): number {
   const freq = 1 / Math.pow(10000, (2 * Math.floor(dim / 2)) / D_MODEL);
@@ -64,7 +71,8 @@ export default function PositionalEncodingVisual() {
               fill="none"
               stroke={COLORS[d]}
               strokeWidth={1.75}
-              opacity={0.85}
+              strokeDasharray={DASHES[d] === "none" ? undefined : DASHES[d]}
+              opacity={0.9}
             />
           ))}
           <line

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useApiKey } from "./ApiKeyContext";
+import ThemeToggle from "./ThemeToggle";
 
 interface HeaderProps {
   view: "course" | "playground" | "api";
@@ -51,7 +52,8 @@ export default function Header({ view, setView }: HeaderProps) {
           </nav>
         </div>
 
-        <div className="relative">
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
           {editing ? (
             <div className="flex items-center gap-1.5">
               <input

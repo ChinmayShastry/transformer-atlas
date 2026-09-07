@@ -31,7 +31,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       className={`${plexSans.variable} ${plexSerif.variable} ${plexMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        {/* Applies the stored theme before first paint. Without this the page
+            renders in the system theme and then snaps, which is worse than
+            either theme on its own. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var t=localStorage.getItem("transformer-atlas-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t)}}catch(e){}`,
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
