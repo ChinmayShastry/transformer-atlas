@@ -12,6 +12,7 @@ import UsageMeter from "@/components/UsageMeter";
 import TimelineSpine from "./TimelineSpine";
 import EraOpening from "./EraOpening";
 import StorySection from "./StorySection";
+import EraTransition from "./EraTransition";
 
 export default function StoryMode({ steps }: { steps: Step[] }) {
   return (
@@ -131,6 +132,23 @@ function StoryShell({ steps }: { steps: Step[] }) {
               if (!step) return null;
               return <StorySection key={id} step={step} era={era} />;
             })}
+
+            {/* The hinge between eras, scrubbed by scroll: the reader watches
+                the previous era's mechanism turn into the next one's. */}
+            {era.id === "before" && (
+              <EraTransition
+                kind="recurrence-dissolve"
+                eyebrow="2017 — the hinge"
+                headline="Now watch the chain disappear"
+              />
+            )}
+            {era.id === "transformer" && (
+              <EraTransition
+                kind="scale-bloom"
+                eyebrow="2018 onward"
+                headline="The architecture stopped. The scale did not."
+              />
+            )}
           </div>
         ))}
 
