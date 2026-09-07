@@ -10,8 +10,8 @@ const MARGIN = 46;
 const BASE_Y = H - 46;
 
 export default function RecurrenceDissolve({ progress }: { progress: number }) {
-  const { sentence } = useSentence();
-  const tokens = tokenizeSentence(sentence, 7);
+  const { displaySentence } = useSentence();
+  const tokens = tokenizeSentence(displaySentence, 7);
   const n = Math.max(tokens.length, 2);
 
   const x = (i: number) =>
