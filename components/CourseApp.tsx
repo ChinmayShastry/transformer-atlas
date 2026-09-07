@@ -10,6 +10,7 @@ import StepCard from "./StepCard";
 import StepNav from "./StepNav";
 import TokenizerPlayground from "./TokenizerPlayground";
 import ApiExplorer from "./ApiExplorer";
+import CompletionCard from "./CompletionCard";
 
 export default function CourseApp({ steps }: { steps: Step[] }) {
   return (
@@ -40,6 +41,10 @@ function CourseShell({ steps }: { steps: Step[] }) {
       setView("api");
       return;
     }
+    if (hash === "done") {
+      setIndex(steps.length);
+      return;
+    }
     if (hash) {
       const linked = steps.findIndex((s) => s.id === hash);
       if (linked >= 0) {
@@ -49,7 +54,9 @@ function CourseShell({ steps }: { steps: Step[] }) {
     }
     try {
       const saved = localStorage.getItem(PROGRESS_KEY);
-      if (saved) {
+      if (saved === "done") {
+        setIndex(steps.length);
+      } else if (saved) {
         const resumed = steps.findIndex((s) => s.id === saved);
         if (resumed >= 0) setIndex(resumed);
       }
@@ -62,7 +69,7 @@ function CourseShell({ steps }: { steps: Step[] }) {
     if (gateOpen) return;
     const hash =
       view === "course"
-        ? steps[index]?.id
+        ? steps[index]?.id ?? "done"
         : view === "playground"
         ? "tokenizer"
         : "api";
@@ -81,7 +88,7 @@ function CourseShell({ steps }: { steps: Step[] }) {
     function onKey(e: KeyboardEvent) {
       if (gateOpen || view !== "course") return;
       if (e.key === "ArrowRight")
-        setIndex((i) => Math.min(steps.length - 1, i + 1));
+        setIndex((i) => Math.min(steps.length, i + 1));
       if (e.key === "ArrowLeft") setIndex((i) => Math.max(0, i - 1));
     }
     window.addEventListener("keydown", onKey);
@@ -97,14 +104,30 @@ function CourseShell({ steps }: { steps: Step[] }) {
       <Header view={view} setView={setView} />
       {view === "course" ? (
         <main className="flex-1 max-w-3xl mx-auto w-full px-4 py-10">
-          <StepCard step={steps[index]} index={index} total={steps.length} />
-          <StepNav
-            index={index}
-            total={steps.length}
-            onPrev={() => setIndex((i) => Math.max(0, i - 1))}
-            onNext={() => setIndex((i) => Math.min(steps.length - 1, i + 1))}
-            onJump={setIndex}
-          />
+          {index >= steps.length ? (
+            <CompletionCard
+              steps={steps}
+              onJump={setIndex}
+              onRestart={() => setIndex(0)}
+              onGoTo={setView}
+              onBack={() => setIndex(steps.length - 1)}
+            />
+          ) : (
+            <>
+              <StepCard
+                step={steps[index]}
+                index={index}
+                total={steps.length}
+              />
+              <StepNav
+                steps={steps}
+                index={index}
+                onPrev={() => setIndex((i) => Math.max(0, i - 1))}
+                onNext={() => setIndex((i) => Math.min(steps.length, i + 1))}
+                onJump={setIndex}
+              />
+            </>
+          )}
         </main>
       ) : view === "playground" ? (
         <main className="flex-1">

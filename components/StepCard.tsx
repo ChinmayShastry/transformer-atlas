@@ -15,6 +15,7 @@ import KvCacheVisual from "./visuals/KvCacheVisual";
 import MoeVisual from "./visuals/MoeVisual";
 import LiveGenerationPanel from "./LiveGenerationPanel";
 import SentenceInput from "./SentenceInput";
+import { eraPosition, ERAS } from "@/lib/eras";
 
 const USES_SENTENCE = new Set<Step["visual"]>(["rnn", "selfattention", "bertgpt"]);
 
@@ -43,12 +44,38 @@ export default function StepCard({
 }) {
   const [showBody, setShowBody] = useState(false);
   const Visual = VISUALS[step.visual];
+  const { era, eraNumber, indexInEra, isEraOpening } = eraPosition(step.id);
 
   return (
     <div key={step.id} className="animate-fade-in-up">
-      <p className="text-xs font-mono text-muted mb-2">
-        Step {index + 1} / {total}
-      </p>
+      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 mb-2">
+        <span
+          className="text-[11px] font-mono uppercase tracking-[0.14em]"
+          style={{ color: era.color }}
+        >
+          {era.name}
+        </span>
+        <span className="text-[11px] font-mono text-muted">
+          · {indexInEra + 1} of {era.stepIds.length} · step {index + 1}/{total}
+        </span>
+      </div>
+
+      {isEraOpening && (
+        <div
+          className="mb-5 pl-4 border-l-2 animate-fade-in-up"
+          style={{ borderColor: era.color }}
+        >
+          <p
+            className="text-xs font-mono uppercase tracking-[0.12em] mb-1"
+            style={{ color: era.color }}
+          >
+            Era {eraNumber} of {ERAS.length} — {era.kicker}
+          </p>
+          <p className="text-sm text-muted leading-relaxed max-w-2xl">
+            {era.blurb}
+          </p>
+        </div>
+      )}
       <h2 className="font-serif text-[27px] leading-[1.22] font-semibold mb-3 text-foreground text-balance">
         {step.title}
       </h2>
