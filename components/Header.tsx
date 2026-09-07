@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useApiKey } from "./ApiKeyContext";
 import ThemeToggle from "./ThemeToggle";
 import UsageMeter from "./UsageMeter";
@@ -54,6 +55,12 @@ export default function Header({ view, setView }: HeaderProps) {
         </div>
 
         <div className="flex items-center gap-2">
+          <Link
+            href="/"
+            className="text-xs text-muted hover:text-foreground border border-border rounded-full px-2.5 py-1 whitespace-nowrap"
+          >
+            Story
+          </Link>
           <UsageMeter />
           <ThemeToggle />
           {editing ? (

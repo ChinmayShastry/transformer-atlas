@@ -87,7 +87,7 @@ function StoryShell({ steps }: { steps: Step[] }) {
             <UsageMeter />
             <ThemeToggle />
             <Link
-              href="/"
+              href="/steps"
               className="text-xs text-muted hover:text-foreground border border-border rounded-full px-2.5 py-1 whitespace-nowrap"
             >
               Step view
@@ -163,13 +163,13 @@ function StoryShell({ steps }: { steps: Step[] }) {
           </p>
           <div className="flex flex-wrap gap-2">
             <Link
-              href="/#api"
+              href="/steps#api"
               className="px-4 py-2 rounded-md bg-accent text-on-accent text-sm font-medium hover:brightness-110 transition"
             >
               Open the API Deep Dive
             </Link>
             <Link
-              href="/#tokenizer"
+              href="/steps#tokenizer"
               className="px-4 py-2 rounded-md border border-border text-sm font-medium hover:bg-surface-2 transition"
             >
               Tokenizer Playground
